@@ -1,0 +1,3 @@
+[console_scripts]
+snpqc = snpqc.pipeline:main
+

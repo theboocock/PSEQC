@@ -1,0 +1,8 @@
+setup.py
+snpqc/pseq_before_vis.py
+snpqc.egg-info/PKG-INFO
+snpqc.egg-info/SOURCES.txt
+snpqc.egg-info/dependency_links.txt
+snpqc.egg-info/entry_points.txt
+snpqc.egg-info/not-zip-safe
+snpqc.egg-info/top_level.txt

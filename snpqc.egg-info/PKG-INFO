@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: snpqc
+Version: .1
+Summary: Basic SNP QC using Shiny and Plink/seq (also works for indels)
+Home-page: github.com/smilefreak/snpqc
+Author: James Boocock
+Author-email: james.boocock@otago.ac.nz
+License: Mit
+Description: UNKNOWN
+Platform: UNKNOWN
