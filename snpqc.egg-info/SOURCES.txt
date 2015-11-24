@@ -1,5 +1,5 @@
 setup.py
-snpqc/pseq_before_vis.py
+snpqc/pipeline.py
 snpqc.egg-info/PKG-INFO
 snpqc.egg-info/SOURCES.txt
 snpqc.egg-info/dependency_links.txt
