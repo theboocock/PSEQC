@@ -17,7 +17,7 @@ import logging
 import sys
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
-__WRITE_VARDB_TEMPLATE__=""""
+__WRITE_VARDB_TEMPLATE__="""
 pseq_write_after_qc.sh {0} {1}
 """
 __PED_VCF_SH__="""
@@ -68,10 +68,9 @@ def post_qc(args):
     ped_output = args.ped_output 
     vcf_output = args.vcf_output
     command = __WRITE_VARDB_TEMPLATE__.format(sites, output_folder)
+    #logging.info("Running: {0}".format(command))
     try:
-        logging.info("Running: {0}".format(command))
         command = shlex.split(command)
-        logging.info("Running: {0}".format(command))
         subprocess.check_call(command)
     except:
         logging.error("Command: {0} failed".format(' '.join(command)))
