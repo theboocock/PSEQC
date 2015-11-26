@@ -6,13 +6,14 @@ PHENOTYPE=$1
 FILTER=$2
 VCF=$3
 PHENOTYPE_COLUMN=$4
+RESOURCES=$5
 
-if [[ $PHENOTYPE_COLUMN == "" ]]; then
+if [[ $RESOURCES == "" ]]; then
     echo "Usage:  pseq_stats.sh <phenotype column name> <filter> <vcf>"
     exit 1    
 fi
 echo $VCF
-pseq proj new-project --resources ~/rm_G6174_G5913_AT0721/hg19
+pseq proj new-project --resources $RESOURCES 
 pseq proj load-vcf --vcf $VCF 
 echo "pseq proj load-vcf --vcf ${VCF}" 
 # Load phenotype file
@@ -21,7 +22,6 @@ pseq proj load-pheno --file $PHENOTYPE
 echo "COMPLETE: Load phenotypes into Plink/seq"
 # Create genotype mean for cases and controls
 mkdir -p qc
-
 # Output raw counts
 echo "RUNNING: Output raw counts"
 pseq proj counts --mask $FILTER --phenotype $PHENOTYPE_COLUMN \

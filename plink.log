@@ -1,0 +1,11 @@
+PLINK v1.90b3l 64-bit (18 Apr 2015)
+3 arguments: --bfile qc/snp_plink_qc --genome
+Hostname: biocsfklaptop.otago.ac.nz
+Working directory: /Users/smilefreak/Programming/OpenSource/MyGitHub/reseq_pipeline
+Start time: Fri Nov 27 01:47:59 2015
+
+Random number seed: 1448542079
+16384 MB RAM detected; reserving 8192 MB for main workspace.
+Error: Failed to open qc/snp_plink_qc.bed.
+
+End time: Fri Nov 27 01:47:59 2015
