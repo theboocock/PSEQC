@@ -5,8 +5,9 @@
 PHENOTYPE=$1
 FILTER=$2
 VCF=$3
+PHENOTYPE_COLUMN=$4
 
-if [[ $PHENOTYPE == "" ]]; then
+if [[ $PHENOTYPE_COLUMN == "" ]]; then
     echo "Usage:  pseq_stats.sh <phenotype column name> <filter> <vcf>"
     exit 1    
 fi
@@ -16,19 +17,19 @@ pseq proj load-vcf --vcf $VCF
 echo "pseq proj load-vcf --vcf ${VCF}" 
 # Load phenotype file
 echo "RUNNING: Load phenotypes into Plink/seq"
-pseq proj load-pheno --file /Users/smilefreak/resequencing/combined_qc/11April2015/pheno/final_all_phenotypes.txt 
+pseq proj load-pheno --file $PHENOTYPE 
 echo "COMPLETE: Load phenotypes into Plink/seq"
 # Create genotype mean for cases and controls
 mkdir -p qc
 
 # Output raw counts
 echo "RUNNING: Output raw counts"
-pseq proj counts --mask $FILTER --phenotype $PHENOTYPE \
+pseq proj counts --mask $FILTER --phenotype $PHENOTYPE_COLUMN \
 > qc/counts.txt
 echo "COMPLETE: Output raw counts"
 # Output raw pvalues
 echo "RUNNING: Output raw pvalues"
-pseq proj v-assoc --mask $FILTER --phenotype $PHENOTYPE \
+pseq proj v-assoc --mask $FILTER --phenotype $PHENOTYPE_COLUMN \
 > qc/pval_all.txt
 echo "COMPLETE: Output raw pvalues"
 # Output overall mean, DP and GQ for all
@@ -38,23 +39,23 @@ include="G=g(GQ); D=g(DP); GQM=mean( G ) ; DPM=mean( D ) " \
 --vmeta --show GQM DPM --out qc/gqgm.stats  
 # Output overall mean, DP and GQ for cases
 pseq proj v-view --mask no-vmeta  $FILTER \
-phe=$PHENOTYPE:2 include="G=g(GQ); D=g(DP); GQM=mean( G ) ; DPM=mean( D ) " \
+phe=$PHENOTYPE_COLUMN:2 include="G=g(GQ); D=g(DP); GQM=mean( G ) ; DPM=mean( D ) " \
 --vmeta --show GQM DPM --out qc/gqgm.cases.stats 
 # Output overall mean, DP and GQ for controls
 pseq proj v-view --mask no-vmeta  $FILTER \
-phe=$PHENOTYPE:1 include="G=g(GQ); D=g(DP); GQM=mean( G ) ; DPM=mean( D ) " \
+phe=$PHENOTYPE_COLUMN:1 include="G=g(GQ); D=g(DP); GQM=mean( G ) ; DPM=mean( D ) " \
 --vmeta --show GQM DPM --out qc/gqgm.controls.stats 
 echo "COMPLETE: GQM and DPM"
 # Raw association for HWE
 echo "RUNNING: Hwe calculation"
-pseq proj v-assoc --mask $FILTER --phenotype $PHENOTYPE \
+pseq proj v-assoc --mask $FILTER --phenotype $PHENOTYPE_COLUMN \
 > qc/hwe_all.txt
 echo "COMPLETE: Hwe calculation"
 
 # variant frequencies
 echo "RUNNING: Variant frequencies"
-pseq proj v-freq --mask $FILTER phe=$PHENOTYPE:2 > qc/cases.txt
-pseq proj v-freq --mask $FILTER phe=$PHENOTYPE:1 > qc/controls.txt
+pseq proj v-freq --mask $FILTER phe=$PHENOTYPE_COLUMN:2 > qc/cases.txt
+pseq proj v-freq --mask $FILTER phe=$PHENOTYPE_COLUMN:1 > qc/controls.txt
 echo "COMPLETE: Variant frequencies"
 # Annotate coding sites
 echo "RUNNING: Variant effect" 
@@ -73,9 +74,9 @@ pseq proj v-meta-matrix --mask $FILTER --name DP  > qc/genotype_depth.txt
 echo "COMPLETE: Genotype matrix"
 
 echo "RUNNING: Allelic balance"
-pseq proj allelic-balance --mask $FILTER --phenotype $PHENOTYPE  > qc/site.ab.summ
-pseq proj allelic-balance --mask $FILTER phe=$PHENOTYPE:2  > qc/site.cases.ab.summ
-pseq proj allelic-balance --mask $FILTER phe=$PHENOTYPE:1  > qc/site.controls.ab.summ
+pseq proj allelic-balance --mask $FILTER --phenotype $PHENOTYPE_COLUMN  > qc/site.ab.summ
+pseq proj allelic-balance --mask $FILTER phe=$PHENOTYPE_COLUMN:2  > qc/site.cases.ab.summ
+pseq proj allelic-balance --mask $FILTER phe=$PHENOTYPE_COLUMN:1  > qc/site.controls.ab.summ
 echo "COMPLETE: Allelic balance"
 
 echo "RUNNING: GQ and GM awk commands processing data for further processing"
