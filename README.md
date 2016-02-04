@@ -1,2 +1,7 @@
-# resequencing_qc_pipeline
-Resequencing QC Pipeline.
+# PSEQC 
+
+Python script that wraps a number of PLINK/SEQ analysis scripts.
+
+
+
+
