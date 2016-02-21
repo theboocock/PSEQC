@@ -12,7 +12,7 @@ def locate_packages():
 
 setup(
     name="snpqc",
-    version=".1",
+    version="0.1",
     packages=locate_packages(),
     author="James Boocock",
     author_email="james.boocock@otago.ac.nz",

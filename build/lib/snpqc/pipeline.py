@@ -32,7 +32,7 @@ __PSEQ_STATS_R__="""
     pseq_stats.R {0}
 """
 __INDIV_STATS_SH__="""
-    pseq_indiv.sh {0} {1} {2} {3}
+    pseq_indiv.sh {0} {1} {2} {3} {4}
 """
 __INDIV_STATS_R__="""
     pseq_indiv.R {0} {1} {2} {3}
@@ -48,8 +48,9 @@ def individual_qc_func(args):
     phenotype_file = args.phenotype
     resources = args.resources
     snp_max_pheno = args.original_phenotypes
+    filter_string = args.filter_string
     output_file = "indiv_qc.txt"
-    command = __INDIV_STATS_SH__.format(vcf_input, phenotype, phenotype_column, resources)
+    command = __INDIV_STATS_SH__.format(vcf_input, phenotype, phenotype_column, resources, filter_string)
     try:
         logging.info("Running: {0}".format(command))
         command = shlex.split(command)
@@ -129,6 +130,7 @@ def main():
     parser = argparse.ArgumentParser(description="Plink/Seq QC pipeline for sequencing data")
     subparsers = parser.add_subparsers(help='Sub-command help')
     individual_qc = subparsers.add_parser("prep_indivqc",help="Prepare data")
+    individual_qc.add_argument("-f", "--filter", dest="filter_string", help="Filter for plink/seq", default="geno=DP:ge:10")
     individual_qc.add_argument("vcf_input", help="VCF input file for QC analysis")
     individual_qc.add_argument("-p", "--phenotype", dest="phenotype", help="Phenotype file (pseq)", required=True)
     individual_qc.add_argument("-o", "--original-phenotypes", dest="original_phenotypes", help="Original phenotypes file (snpmax)", required=True)

@@ -9,6 +9,7 @@ VCF=$1
 PHENOTYPES=$2
 PHENOTYPES_COLUMN=$3
 RESOURCES=$4
+FILTER=$5
 
 if [[ $RESOURCES == "" ]]; then
     echo "Usage:  pseq_indiv.sh <VCF> <phenotypes> <phenotype_column> <resources>" 
@@ -22,26 +23,26 @@ echo "Load VCF"
 pseq proj load-vcf --vcf $VCF
 
 echo "Variant frequency"
-pseq proj v-freq --mask hwe=0:1e-7 > qc/hwe_fail.txt &
+pseq proj v-freq --mask hwe=0:1e-7 $FILTER > qc/hwe_fail.txt &
 
 echo "Individual statistics"
-pseq proj i-stats --stats gmean=DP ref=dbsnp --mask filter=VQSRTrancheSNP99.90to100.00,VQSRTrancheSNP99.00to99.90,PASS  \
+pseq proj i-stats --stats gmean=DP ref=dbsnp --mask filter=VQSRTrancheSNP99.90to100.00,VQSRTrancheSNP99.00to99.90,PASS $FILTER \
 reg.ex=chrX,chrY  \
 --out qc/all_stats
 echo "singletons"
   pseq proj i-stats --stats gmean=DP ref=dbsnp --mask \
- filter=VQSRTrancheSNP99.90to100.00,VQSRTrancheSNP99.00to99.90,PASS \
+ filter=VQSRTrancheSNP99.90to100.00,VQSRTrancheSNP99.00to99.90,PASS $FILTER\
  mac=1-1\
 reg.ex=chrX,chrY  \
 --out qc/singleton
 echo "doubletons"
   pseq proj i-stats --stats gmean=DP ref=dbsnp --mask \
- filter=VQSRTrancheSNP99.90to100.00,VQSRTrancheSNP99.00to99.90,PASS mac=2-2 \
+ filter=VQSRTrancheSNP99.90to100.00,VQSRTrancheSNP99.00to99.90,PASS mac=2-2 $FILTER \
 reg.ex=chrX,chrY  \
  --out qc/doubleton
 
 echo "Write pedigree file"
-pseq proj write-ped --mask  snp biallelic maf=0.05-0.95 \
+pseq proj write-ped --mask  snp biallelic maf=0.05-0.95 $FILTER \
 geno.req=GQ:ge:95,DP:ge:10 --out qc/snp_plink
 
 echo "Snp plink QC"
@@ -49,9 +50,9 @@ plink --tfile qc/snp_plink --geno 0.01 --hwe 0.001 --make-bed \
 --out qc/snp_plink_qc
 echo "Poly MDS"
 plink --bfile qc/snp_plink_qc --indep-pairwise 100 50 0.1 \
---out  qc/poly_mds
+--out  qc/snp_mds
 echo "4MDS"
-plink --bfile qc/snp_plink_qc --extract qc/poly_mds.prune.in \
+plink --bfile qc/snp_plink_qc --extract qc/snp_mds.prune.in \
 --make-bed --out qc/4mds
 echo "MDS Frequency"
 plink --bfile qc/snp_plink_qc --freq --out qc/4mds_freq
@@ -61,5 +62,5 @@ echo "Plink MDS"
 plink --bfile qc/4mds --read-genome plink.genome --cluster --mds-plot 4 --out qc/plink
 
 # Clean up temporary project at the end.
-rm -Rf proj_out/ proj.pseq 
+#rm -Rf proj_out/ proj.pseq 
 
